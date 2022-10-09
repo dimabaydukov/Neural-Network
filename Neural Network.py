@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy
 import h5py
+import pickle
 
 
 def sigmoid(x):
@@ -89,7 +90,7 @@ class NeuralNetwork:
             loss += self.forward(x, y)['error']
         return loss
 
-    def train(self, x_train, y_train, iterations=1000, rate=0.5):
+    def train(self, x_train, y_train, iterations, rate):
         rand_indices = np.random.choice(len(x_train), iterations, replace=True)
 
         def l_rate(base_rate, ite, iterations_number, schedule=False):
@@ -107,15 +108,15 @@ class NeuralNetwork:
             b_result = self.back_propagation(x_train[i], y_train[i], f_result)
             self.optimize(b_result, l_rate(rate, i, iterations, True))
 
-            if count % 1000 == 0:
-                if count % 5000 == 0:
+            if count % 5000 == 0:
+                if count % 15000 == 0:
                     loss = self.loss(x_train, y_train)
                     test = self.test(test_images, test_labels)
-                    print('Trained for {} times,'.format(count), 'loss = {}, test = {}'.format(loss, test))
+                    print('Trained for {} times'.format(count), 'loss = {}, test = {}'.format(loss, test))
                     loss_dict[str(count)] = loss
                     test_dict[str(count)] = test
                 else:
-                    print('Trained for {} times,'.format(count))
+                    print('Trained for {} times'.format(count))
             count += 1
 
         print('Training finished!')
@@ -129,8 +130,7 @@ class NeuralNetwork:
             prediction = np.argmax(self.forward(x, y)['f_X'])
             if prediction == y:
                 total_correct += 1
-        print('Accuracy Test: ', total_correct / len(x_test))
-        return total_correct / np.float(len(x_test))
+        return total_correct / np.float64(len(x_test))
 
 
 num_iterations = 200000
@@ -139,9 +139,25 @@ image_pixels = 28 * 28
 num_outputs = 10
 hidden_size = 300
 
+"""
 NN = NeuralNetwork(image_pixels, hidden_size, num_outputs)
 cost_dict, tests_dict = NN.train(train_images, train_labels, num_iterations, learning_rate)
 accuracy = NN.test(test_images, test_labels)
+
+with open('data/save.txt', 'wb+') as f:
+    pickle.dump(NN, f)
+    pickle.dump(cost_dict, f)
+    pickle.dump(tests_dict, f)
+"""
+
+with open('data/save.txt', 'rb+') as t:
+    for i in range(3):
+        if i == 0:
+            NN = pickle.load(t)
+        elif i == 1:
+            cost_dict = pickle.load(t)
+        else:
+            tests_dict = pickle.load(t)
 
 plt.plot(cost_dict.keys(), cost_dict.values())
 plt.ylabel('Loss function')
@@ -154,5 +170,5 @@ plt.plot(tests_dict.keys(), tests_dict.values())
 plt.ylabel('Test Accuracy')
 plt.xlabel('Number of iterations')
 plt.xticks(rotation=60)
-plt.title('Test accuracy w.r.t. number of iterations')
+plt.title('Test accuracy')
 plt.show()
