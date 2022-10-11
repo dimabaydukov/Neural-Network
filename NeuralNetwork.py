@@ -112,7 +112,7 @@ class NeuralNetwork:
                 if count % 15000 == 0:
                     loss = self.loss(x_train, y_train)
                     test = self.test(test_images, test_labels)
-                    print('Trained for {} times'.format(count), 'loss = {}, test = {}'.format(loss, test))
+                    print('Trained for {} times'.format(count), 'loss = {}, accuracy = {}'.format(loss, test))
                     loss_dict[str(count)] = loss
                     test_dict[str(count)] = test
                 else:
@@ -148,22 +148,23 @@ with open('data/save.txt', 'wb+') as f:
     pickle.dump(NN, f)
     pickle.dump(cost_dict, f)
     pickle.dump(tests_dict, f)
-"""
+
 
 with open('data/save.txt', 'rb+') as t:
-    for i in range(3):
-        if i == 0:
+    for j in range(3):
+        if j == 0:
             NN = pickle.load(t)
-        elif i == 1:
+        elif j == 1:
             cost_dict = pickle.load(t)
         else:
             tests_dict = pickle.load(t)
+
 
 plt.plot(cost_dict.keys(), cost_dict.values())
 plt.ylabel('Loss function')
 plt.xlabel('Number of iterations')
 plt.xticks(rotation=60)
-plt.title('Loss function w.r.t. number of iterations')
+plt.title('Loss function')
 plt.show()
 
 plt.plot(tests_dict.keys(), tests_dict.values())
@@ -172,3 +173,4 @@ plt.xlabel('Number of iterations')
 plt.xticks(rotation=60)
 plt.title('Test accuracy')
 plt.show()
+"""
