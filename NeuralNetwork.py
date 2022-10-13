@@ -133,14 +133,14 @@ class NeuralNetwork:
         return total_correct / np.float64(len(x_test))
 
 
-num_iterations = 200000
+num_iterations = 100000
 learning_rate = 0.01
 image_pixels = 28 * 28
 num_outputs = 10
-hidden_size = 300
+hidden_size = 150
 
 """
-NN = NeuralNetwork(image_pixels, hidden_size, num_outputs)
+NN = NeuralNetwork(image_pixels, num_outputs, hidden_size)
 cost_dict, tests_dict = NN.train(train_images, train_labels, num_iterations, learning_rate)
 accuracy = NN.test(test_images, test_labels)
 
