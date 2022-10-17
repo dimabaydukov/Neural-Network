@@ -108,8 +108,8 @@ class NeuralNetwork:
             b_result = self.back_propagation(x_train[i], y_train[i], f_result)
             self.optimize(b_result, l_rate(rate, i, iterations, True))
 
-            if count % 5000 == 0:
-                if count % 15000 == 0:
+            if count % 2000 == 0:
+                if count % 10000 == 0:
                     loss = self.loss(x_train, y_train)
                     test = self.test(test_images, test_labels)
                     print('Trained for {} times'.format(count), 'loss = {}, accuracy = {}'.format(loss, test))
@@ -131,6 +131,14 @@ class NeuralNetwork:
             if prediction == y:
                 total_correct += 1
         return total_correct / np.float64(len(x_test))
+
+    def predict_number(self, x):
+        z = np.matmul(self.first_layer['para'], x).reshape((self.hidden_nodes, 1)) + self.first_layer['bias']
+        h = np.array(activation_function(z)).reshape((self.hidden_nodes, 1))
+        u = np.matmul(self.second_layer['para'], h).reshape((self.output_nodes, 1)) + self.second_layer['bias']
+        predict_list = np.squeeze(softmax(u))
+        predict_list.reshape((1, self.output_nodes))
+        return np.argmax(predict_list)
 
 
 num_iterations = 100000
@@ -173,4 +181,5 @@ plt.xlabel('Number of iterations')
 plt.xticks(rotation=60)
 plt.title('Test accuracy')
 plt.show()
+
 """
